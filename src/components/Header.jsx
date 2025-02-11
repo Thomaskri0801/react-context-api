@@ -1,26 +1,39 @@
 import { useContext } from "react";
-import { DataContext } from "../App";
+import { DataContext, ThemeContext } from "../App";
 
-export default function Header({ theme, setTheme }) {
+export default function Header() {
     const context = useContext(DataContext)
+    const themeContext = useContext(ThemeContext)
 
-    const handleCheckChange = () => {
-      if(theme === 'dark') {
-        setTheme('light');
-      } else {
-        setTheme('dark');
-      }
+    if (localStorage.getItem("theme")) {
+        themeContext.setTheme(localStorage.getItem("theme"))
     }
+
+    
+    const handleCheckChange = () => {
+        localStorage.clear()
+        if(themeContext.theme === 'dark') {
+            themeContext.setTheme('light');
+            localStorage.setItem("theme", "light")
+        } else {
+            themeContext.setTheme('dark');
+            localStorage.setItem("theme", "dark")
+        }
+    }
+
+   
 
     const handleButtonClick = () => {
       console.log("CLICK!");
+      localStorage.clear()
+      themeContext.setTheme('light');
     }
 
     return (
-        <header className={theme}>
+        <header className={themeContext.theme}>
             <div>
                 <div className="dark-mode-container">
-                    <input id="darkMode" type="checkbox" checked={theme === 'dark'} onChange={handleCheckChange}></input>
+                    <input id="darkMode" type="checkbox" checked={themeContext.theme === 'dark'} onChange={handleCheckChange}></input>
                     <label htmlFor="darkMode">Enable Dark Mode</label>
                 </div>
                 <div>
@@ -96,7 +109,7 @@ export default function Header({ theme, setTheme }) {
 
             <button className="tweet-btn">Tweet</button>
 
-            <div className={theme === 'dark' ? 'profile-card dark' : 'profile-card'}>
+            <div className={themeContext.theme === 'dark' ? 'profile-card dark' : 'profile-card'}>
                 <div className="profile-icon"><img src={context.user.profileImage}/></div>
 
                 <div className="profile-details">
